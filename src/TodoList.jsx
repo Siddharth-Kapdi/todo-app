@@ -77,6 +77,15 @@ const TodoList = () => {
         }
       }
 
+      case 'REMOVE_TODO': {
+        console.log('hello')
+
+        return {
+          ...state,
+          todoList: state.todoList.filter((todo) => todo.id !== action.payload.id),
+        }
+      }
+
       default:
         return state
     }
@@ -181,7 +190,7 @@ const TodoList = () => {
       {state.error && <p className="text-center text-rose-400">{state.error}</p>}
       <div className="space-y-4">
         {state.todoList.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} />
+          <TodoItem key={todo.id} todo={todo} dispatch={dispatch} />
         ))}
       </div>
     </div>

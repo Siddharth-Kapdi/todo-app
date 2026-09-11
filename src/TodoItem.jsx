@@ -3,7 +3,7 @@ import { FaArrowAltCircleDown } from 'react-icons/fa'
 import { FaEdit } from 'react-icons/fa'
 import { IoMdRemoveCircleOutline } from 'react-icons/io'
 
-const TodoItem = ({ todo }) => {
+const TodoItem = ({ todo, dispatch }) => {
   return (
     <div className="flex items-center justify-between space-x-8 bg-slate-950 p-4 rounded-lg">
       <div className="flex items-center space-x-4">
@@ -27,7 +27,7 @@ const TodoItem = ({ todo }) => {
         <button>
           <FaEdit className="text-2xl cursor-pointer" />
         </button>
-        <button>
+        <button onClick={() => dispatch({ type: 'REMOVE_TODO', payload: { id: todo.id } })}>
           <IoMdRemoveCircleOutline className="text-2xl text-rose-400 cursor-pointer" />
         </button>
       </div>
