@@ -1,6 +1,6 @@
 import { FaPlus } from 'react-icons/fa'
 import TodoItem from './TodoItem'
-import { useReducer } from 'react'
+import { useReducer, useState } from 'react'
 
 // const mockTodos = [
 //   {
@@ -23,6 +23,7 @@ const initialState = {
 }
 
 const TodoList = () => {
+  const [editingId, setEditingId] = useState(null)
   const reducer = (state, action) => {
     switch (action.type) {
       case 'SET_TODO':
@@ -83,6 +84,15 @@ const TodoList = () => {
         return {
           ...state,
           todoList: state.todoList.filter((todo) => todo.id !== action.payload.id),
+        }
+      }
+
+      case 'EDIT_TODO': {
+        return {
+          ...state,
+          todoList: state.todoList.map((todo) =>
+            todo.id === action.payload.id ? { ...todo, ...action.payload } : todo
+          ),
         }
       }
 
@@ -190,7 +200,13 @@ const TodoList = () => {
       {state.error && <p className="text-center text-rose-400">{state.error}</p>}
       <div className="space-y-4">
         {state.todoList.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} dispatch={dispatch} />
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            dispatch={dispatch}
+            editingId={editingId}
+            setEditingId={setEditingId}
+          />
         ))}
       </div>
     </div>
