@@ -29,21 +29,12 @@ const TodoList = () => {
       return 'Category is required!'
     }
 
-    console.log(
-      'editing id:',
-      id,
-      'todoList ids:',
-      state.todoList.map((t) => t.id)
-    )
-
     const isDuplicate = state.todoList.some(
       (todo) =>
         todo.id !== id &&
         todo.description.toLowerCase().trim() === description.toLowerCase().trim() &&
         todo.category === category
     )
-
-    console.log('description', description, 'category', category)
 
     if (isDuplicate) {
       return 'Duplicate entry is not allowed!'
@@ -52,7 +43,6 @@ const TodoList = () => {
   }
 
   const reducer = (state, action) => {
-    console.log('ACTION:', action.type, action.payload)
     switch (action.type) {
       case 'SET_TODO':
         return {
@@ -65,7 +55,6 @@ const TodoList = () => {
 
       case 'ADD_TODO': {
         const validationError = validateTodo(state.todoItem, state)
-        console.log(validationError)
 
         if (validationError) {
           return { ...state, error: validationError }
@@ -80,24 +69,19 @@ const TodoList = () => {
             category: '',
             completed: false,
           },
-          categoryFilter: 'all',
-          statusFilter: 'all',
           error: '',
         }
       }
 
       case 'REMOVE_TODO': {
-        console.log('hello')
-
         return {
           ...state,
-          todoList: state.todoList.filter((todo) => todo.id !== action.payload.id),
+          todoList: state.todoList.filter((todo) => todo.id !== action.payload),
         }
       }
 
       case 'EDIT_TODO': {
         const validationError = validateTodo(action.payload, state)
-        console.log(validationError)
 
         if (validationError) {
           return { ...state, error: validationError }
@@ -213,6 +197,7 @@ const TodoList = () => {
               focus:ring-2
               focus:ring-violet-500/20
               cursor-pointer"
+              value={state.categoryFilter}
               onChange={(e) =>
                 dispatch({ type: 'FILTER_BY_CATEGORY', payload: { category: e.target.value } })
               }
@@ -235,6 +220,7 @@ const TodoList = () => {
               focus:border-violet-500
               focus:ring-2 focus:ring-violet-500/20
               cursor-pointer"
+              value={state.statusFilter}
               onChange={(e) =>
                 dispatch({ type: 'FILTER_BY_STATUS', payload: { status: e.target.value } })
               }
