@@ -2,18 +2,9 @@ import { FaPlus } from 'react-icons/fa'
 import TodoItem from './TodoItem'
 import { useReducer, useState } from 'react'
 
-// const mockTodos = [
-//   {
-//     id: 1,
-//     description: 'Complete React project',
-//     category: 'Work',
-//     completed: true,
-//   },
-// ]
-
 const initialState = {
   todoItem: {
-    id: Date.now(),
+    id: null,
     description: '',
     category: '',
     completed: false,
@@ -24,7 +15,42 @@ const initialState = {
 
 const TodoList = () => {
   const [editingId, setEditingId] = useState(null)
+
+  const validateTodo = (todoItem, state) => {
+    const { id, description, category } = todoItem
+
+    if (!description.trim()) {
+      return 'Description is required!'
+    }
+
+    if (category === '') {
+      return 'Category is required!'
+    }
+
+    console.log(
+      'editing id:',
+      id,
+      'todoList ids:',
+      state.todoList.map((t) => t.id)
+    )
+
+    const isDuplicate = state.todoList.some(
+      (todo) =>
+        todo.id !== id &&
+        todo.description.toLowerCase().trim() === description.toLowerCase().trim() &&
+        todo.category === category
+    )
+
+    console.log('description', description, 'category', category)
+
+    if (isDuplicate) {
+      return 'Duplicate entry is not allowed!'
+    }
+    return ''
+  }
+
   const reducer = (state, action) => {
+    console.log('ACTION:', action.type, action.payload)
     switch (action.type) {
       case 'SET_TODO':
         return {
@@ -36,33 +62,11 @@ const TodoList = () => {
         }
 
       case 'ADD_TODO': {
-        const { description, category } = state.todoItem
+        const validationError = validateTodo(state.todoItem, state)
+        console.log(validationError)
 
-        if (!description.trim()) {
-          return {
-            ...state,
-            error: 'Description is required!',
-          }
-        }
-
-        if (category === '') {
-          return {
-            ...state,
-            error: 'Category is required!',
-          }
-        }
-
-        const isDuplicate = state.todoList.some(
-          (todo) =>
-            todo.description.toLowerCase().trim() === description.toLowerCase().trim() &&
-            todo.category === category
-        )
-
-        if (isDuplicate) {
-          return {
-            ...state,
-            error: 'Duplicate entry is not allowed!',
-          }
+        if (validationError) {
+          return { ...state, error: validationError }
         }
 
         return {
@@ -88,10 +92,27 @@ const TodoList = () => {
       }
 
       case 'EDIT_TODO': {
+        const validationError = validateTodo(action.payload, state)
+        console.log(validationError)
+
+        if (validationError) {
+          return { ...state, error: validationError }
+        }
+
         return {
           ...state,
           todoList: state.todoList.map((todo) =>
             todo.id === action.payload.id ? { ...todo, ...action.payload } : todo
+          ),
+          error: '',
+        }
+      }
+
+      case 'TOGGLE_TODO': {
+        return {
+          ...state,
+          todoList: state.todoList.map((todo) =>
+            todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo
           ),
         }
       }
@@ -160,7 +181,7 @@ const TodoList = () => {
               outline-none
               focus:border-violet-500
               focus:ring-2 focus:ring-violet-500/20"
-              required
+              // required
               value={state.todoItem.description}
               onChange={(e) =>
                 dispatch({ type: 'SET_TODO', payload: { description: e.target.value } })
@@ -174,7 +195,7 @@ const TodoList = () => {
               focus:border-violet-500
               focus:ring-2 focus:ring-violet-500/20
               cursor-pointer"
-              required
+              // required
               value={state.todoItem.category}
               onChange={(e) =>
                 dispatch({ type: 'SET_TODO', payload: { category: e.target.value } })
