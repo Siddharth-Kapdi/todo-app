@@ -10,6 +10,8 @@ const initialState = {
     completed: false,
   },
   todoList: [],
+  categoryFilter: 'all',
+  statusFilter: 'all',
   error: '',
 }
 
@@ -78,6 +80,8 @@ const TodoList = () => {
             category: '',
             completed: false,
           },
+          categoryFilter: 'all',
+          statusFilter: 'all',
           error: '',
         }
       }
@@ -151,12 +155,48 @@ const TodoList = () => {
         }
       }
 
+      case 'FILTER_BY_CATEGORY':
+        return {
+          ...state,
+          categoryFilter: action.payload.category,
+        }
+
+      case 'FILTER_BY_STATUS':
+        return {
+          ...state,
+          statusFilter: action.payload.status,
+        }
+
       default:
         return state
     }
   }
 
   const [state, dispatch] = useReducer(reducer, initialState)
+
+  const filteredTodoList = state.todoList
+    .filter((todo) => {
+      if (state.categoryFilter === 'all') {
+        return true
+      }
+
+      return todo.category === state.categoryFilter
+    })
+    .filter((todo) => {
+      if (state.statusFilter === 'all') {
+        return true
+      }
+
+      if (state.statusFilter === 'completed') {
+        return todo.completed === true
+      }
+
+      if (state.statusFilter === 'pending') {
+        return todo.completed === false
+      }
+
+      return true
+    })
 
   return (
     <div className="max-w-3xl w-full mx-auto bg-slate-900 p-8 rounded-lg shadow-white space-y-5">
@@ -170,8 +210,12 @@ const TodoList = () => {
               py-2
               outline-none
               focus:border-violet-500
-              focus:ring-2 focus:ring-violet-500/20
+              focus:ring-2
+              focus:ring-violet-500/20
               cursor-pointer"
+              onChange={(e) =>
+                dispatch({ type: 'FILTER_BY_CATEGORY', payload: { category: e.target.value } })
+              }
             >
               <option value="all">All</option>
               <option value="work">Work</option>
@@ -191,6 +235,9 @@ const TodoList = () => {
               focus:border-violet-500
               focus:ring-2 focus:ring-violet-500/20
               cursor-pointer"
+              onChange={(e) =>
+                dispatch({ type: 'FILTER_BY_STATUS', payload: { status: e.target.value } })
+              }
             >
               <option value="all">All</option>
               <option value="pending">Pending</option>
@@ -254,7 +301,7 @@ const TodoList = () => {
       </div>
       {state.error && <p className="text-center text-rose-400">{state.error}</p>}
       <div className="space-y-4">
-        {state.todoList.map((todo) => (
+        {filteredTodoList.map((todo) => (
           <TodoItem
             key={todo.id}
             todo={todo}
