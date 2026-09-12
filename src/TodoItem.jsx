@@ -74,10 +74,10 @@ const TodoItem = ({ todo, dispatch, editingId, setEditingId }) => {
               checked={todo.completed}
               onChange={() => dispatch({ type: 'TOGGLE_TODO', payload: todo.id })}
             />
-            <button>
+            <button onClick={() => dispatch({ type: 'MOVE_UP', payload: todo.id })}>
               <FaArrowAltCircleUp className="text-2xl text-emerald-400 cursor-pointer" />
             </button>
-            <button>
+            <button onClick={() => dispatch({ type: 'MOVE_DOWN', payload: todo.id })}>
               <FaArrowAltCircleDown className="text-2xl text-rose-400 cursor-pointer" />
             </button>
           </div>

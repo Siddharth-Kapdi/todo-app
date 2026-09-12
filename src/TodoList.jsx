@@ -4,7 +4,7 @@ import { useReducer, useState } from 'react'
 
 const initialState = {
   todoItem: {
-    id: null,
+    id: Date.now(),
     description: '',
     category: '',
     completed: false,
@@ -114,6 +114,40 @@ const TodoList = () => {
           todoList: state.todoList.map((todo) =>
             todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo
           ),
+        }
+      }
+
+      case 'MOVE_UP': {
+        const index = state.todoList.findIndex((todo) => todo.id === action.payload)
+
+        if (index <= 0) return state
+
+        const newTodoList = [...state.todoList]
+
+        const temp = newTodoList[index - 1]
+        newTodoList[index - 1] = newTodoList[index]
+        newTodoList[index] = temp
+
+        return {
+          ...state,
+          todoList: newTodoList,
+        }
+      }
+
+      case 'MOVE_DOWN': {
+        const index = state.todoList.findIndex((todo) => todo.id === action.payload)
+
+        if (index >= state.todoList.length - 1) return state
+
+        const newTodoList = [...state.todoList]
+
+        const temp = newTodoList[index + 1]
+        newTodoList[index + 1] = newTodoList[index]
+        newTodoList[index] = temp
+
+        return {
+          ...state,
+          todoList: newTodoList,
         }
       }
 
