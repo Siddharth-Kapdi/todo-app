@@ -183,9 +183,9 @@ const TodoList = () => {
     })
 
   return (
-    <div className="max-w-3xl w-full mx-auto bg-slate-900 p-8 rounded-lg shadow-white space-y-5">
-      <div className="w-full flex items-center justify-between gap-4">
-        <div className="flex items-center justify-between gap-4">
+    <div className="max-w-3xl w-full mx-auto bg-slate-900 px-4 md:px-6 lg:px-8 py-8 rounded-lg shadow-white space-y-5">
+      <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 order-2 lg:order-1">
           <div>
             <select
               className="bg-slate-950 text-white border border-slate-700
@@ -231,9 +231,9 @@ const TodoList = () => {
             </select>
           </div>
         </div>
-        <div>
+        <div className="gap-4 order-1 lg:order-2 ">
           <form
-            className="flex items-center justify-between gap-4"
+            className="flex flex-col sm:flex-row items-center justify-between gap-4 "
             onSubmit={(e) => {
               e.preventDefault()
               dispatch({ type: 'ADD_TODO' })
@@ -254,34 +254,37 @@ const TodoList = () => {
                 dispatch({ type: 'SET_TODO', payload: { description: e.target.value } })
               }
             />
-            <select
-              className="bg-slate-950 text-white border border-slate-700
+            <div className="w-full flex items-center justify-between gap-4">
+              <select
+                className="w-full bg-slate-950 text-white border border-slate-700
               rounded-lg
               p-2
               outline-none
               focus:border-violet-500
               focus:ring-2 focus:ring-violet-500/20
               cursor-pointer"
-              // required
-              value={state.todoItem.category}
-              onChange={(e) =>
-                dispatch({ type: 'SET_TODO', payload: { category: e.target.value } })
-              }
-            >
-              <option value="">Select Category</option>
-              <option value="work">Work</option>
-              <option value="personal">Personal</option>
-              <option value="study">Study</option>
-              <option value="shopping">Shopping</option>
-              <option value="health">Health</option>
-            </select>
-            <button
-              className="bg-violet-600 text-white border border-slate-700
+                // required
+                value={state.todoItem.category}
+                onChange={(e) =>
+                  dispatch({ type: 'SET_TODO', payload: { category: e.target.value } })
+                }
+              >
+                <option value="">Select Category</option>
+                <option value="work">Work</option>
+                <option value="personal">Personal</option>
+                <option value="study">Study</option>
+                <option value="shopping">Shopping</option>
+                <option value="health">Health</option>
+              </select>
+              <button
+                type="submit"
+                className="bg-violet-600 text-white border border-slate-700
               rounded-lg
               px-4 py-2 hover:bg-violet-800 cursor-pointer"
-            >
-              <FaPlus />
-            </button>
+              >
+                <FaPlus />
+              </button>
+            </div>
           </form>
         </div>
       </div>
